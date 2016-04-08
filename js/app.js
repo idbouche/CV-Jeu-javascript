@@ -18,22 +18,23 @@ var posy  = 720-64;
 var posxE  = 150;
 var posyE  = 500;
 
-var posxB  = 100;
-var posyB  = 100;
+var posxB  = Math.floor( Math.random() * 1000);
+var posyB  = Math.floor( Math.random() * 1000);
 
-left=false;
-up=false;
-right=false;
-down=false
+var speed    = 8 ;
+var friction = 25;
+var gravity  = 0.3 ;
+var jumping  = false;
+var vy = 0;
+var vx = 0;
 
-var vy = 30;
-var vx = 10;
+keys = [];
 
 
 function setup() {
     cv = document.getElementById("cv");
     context  = cv.getContext('2d');
-    player   = cv.getContext('2d');
+
     enime    = cv.getContext('2d');
     platform = cv.getContext('2d');
     bonus    = cv.getContext('2d');
@@ -45,6 +46,13 @@ function setup() {
     context.fillStyle = "#000";
     context.fillRect(0,0,width,720);
 
+    player   = cv.getContext('2d');
+    player.beginPath();
+    player.fillStyle = "blue";
+    player.fillRect(posx,posy,32,32);
+    player.closePath();
+    player.fill();
+
     platform.fillStyle = "green";
     platform.fillRect(0,720-32,width,32);
 
@@ -53,93 +61,90 @@ function setup() {
 
     enime.fillStyle = "red";
     enime.fillRect(posxE,posyE,32,32);
-}
-
-
-function loup(){
-
-    requestAnimationFrame(loup);
-    setup();
-
-//@@@@@@@@@ Created player @@@@@@@@@@\\
-
-    player.beginPath();
-    player.fillStyle = "blue";
-    player.fillRect(posx,posy,32,32);
-    player.closePath();
-    player.fill();
-
-//@@@@@@@@@ Created Textscore @@@@@@@@@@\\
 
     textscore.fillStyle = "white";
     textscore.font = "30px Arial";
     textscore.fillText("Score : " +score,10,50);
+}
 
-//@@@@@@@@@ Moving player @@@@@@@@@@\\
 
-    window.onkeydown = function(event){
-        player.clearRect(posx,posy,32,32);
-        if(event.keyCode == 37){
-            posx-=vx;
+function loup(){
+    setup();
+    requestAnimationFrame(loup);
+
+    //player.clearRect(posx,posy,32,32);
+
+    if(keys[37]){
+        posx--;
+
+    }
+
+    if(keys[39]) {
+        posx++;
+
+    }
+
+    //@@@@@@@@@ collisione  player @@@@@@@@@@\\
+
+    if (posx >= width - 32){
+        posx = width - 32;
+    }
+    if (posx < 0){
+        posx = 0;
+    }
+    vx *= friction;
+
+    vy += gravity;
+
+    posx += vx;
+    posy += vy;
+
+    if (posy >  720-64){
+        posy =  720-64;
+        jumping = false;
+    }
+
+    if ( keys[38] || keys[32] ) {
+        if(!jumping){
+            jumping = true;
+            vy = -(speed*2);
         }
+    }
 
-        if(event.keyCode == 39) {
-            posx+= vx;
+    // With Platform.
 
-        }
-       /* if(event.keyCode == 40){
-            posy += vy;
+    // With Enime.
+    if (posx >= posxE  &&  posx <= posxE + 32 && posy >= posyE  &&  posy <= posyE + 32){
+        posx  = 10;
+        posy  = 720-64;
 
-        }*/
-        if(event.keyCode == 38){
-            posy-= vy;
-            //player.gravity = 0.1;
-        }
-
-
-//@@@@@@@@@ collisione player @@@@@@@@@@\\
-
-        if (posx > width-32){
-            posx = width - 32;
-        }
-        if (posx < 0){
-            posx = 0;
-        }
-
-// With Platform.
-        if (posy > 720-64){
-            posy = 720-64;
-
-        }
-// With Enime.
-        if (posx >= posxE  &&  posx <= posxE + 32 && posy >= posyE  &&  posy <= posyE + 32){
-            posx  = 10;
-            posy  = 720-64;
-            console.log("enime")
-        }
-//with bonus
-        if (posx >= posxB  &&  posx <= posxB + 32 && posy >= posyB  &&  posy <= posyB + 32){
-            score++;
-            bonus.clearRect(posxB,posyB,32,32);
-        }
-//@@@@@@@@@ Gravity player @@@@@@@@@@\\
-
-
-        window.onkeyup = function(event){
-            if(event.keyCode == 38){
-                posy = 720-32;
-            }
-            if (posy > 720-64){
-                posy = 720-64;
-
-            }
-        }
+    }
+    //with bonus
+    if (posx >= posxB  &&  posx <= posxB + 32 && posy >= posyB  &&  posy <= posyB + 32){
+        score++;
+        posxB = Math.floor( Math.random() * 1000 );
+        posyB = Math.floor( Math.random() * 100 );
 
     }
 
 
 
 }
-loup()
+
+document.body.addEventListener("keydown", function(event) {
+    keys[event.keyCode] = true;
+});
+
+document.body.addEventListener("keyup", function(event) {
+    keys[event.keyCode] = false;
+});
+
+
+window.addEventListener("load",function(){
+    loup();
+});
+
+
+
 
 
