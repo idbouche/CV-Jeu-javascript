@@ -18,8 +18,9 @@ var width  = 3000
 var bgsp   = 0.8;
 var x      = 0;
 var y      = 0;
-var posx  = 10;
-var posy  = 300;
+var posx   = 10;
+var posy   = 300;
+var xpl     = 0;
 
 var posxE  = 150;
 var posyE  = 500;
@@ -54,18 +55,12 @@ function setup() {
     textscore= cv.getContext('2d');
 
     cv.width = innerWidth;
-    cv.height = 720;
+    cv.height = 800;
 
     var bg = new Image();
     bg.src = "../png/BG.png";
-
-    x -= bgsp
+    x      -= bgsp
     context.drawImage(bg,x,y);
-    //var ptrn = context.createPattern(bg, "repeat"); // Create a pattern with this image, and set it to "repeat".
-    //x -= bgsp
-    //context.fillStyle = ptrn;
-    //context.fillRect(x, y, cv.width, cv.height);
-
     if (x <= -1279)
         x = 0;
 
@@ -73,19 +68,21 @@ function setup() {
     var pl = new Image();
     pl.src = "../img/sprit.png";
     player = cv.getContext('2d');
-    cont += 0.2;
+    cont  += 0.2;
     sx     = Math.floor(cont % 9);
 
     player.beginPath();
-    //player.fillStyle = "blue";
     context.drawImage(pl,sWidth * sx,sy,sWidth,sHeight,posx,posy,sWidth,sHeight);
     //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     player.closePath();
     player.fill();
 
 
-    platform.fillStyle = "green";
-    platform.fillRect(0,720-32,width,32);
+    var pla = new Image();
+    pla.src = "../png/Tile/2.png";
+    var ptrn = platform.createPattern(pla, 'repeat');
+    platform.fillStyle = ptrn;
+    platform.fillRect(xpl,720-32,cv.width, 128);
 
     bonus.fillStyle = "yellow";
     bonus.fillRect(posxB,posyB,32,32);
@@ -94,7 +91,6 @@ function setup() {
     enime.fillRect(posxE,posyE,32,32);
 
     textscore.fillStyle = "white";
-    textscore.font = "30px Arial";
     textscore.fillText("Score : " +score,10,50);
 
 }
