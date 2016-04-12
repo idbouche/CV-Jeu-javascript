@@ -95,73 +95,89 @@ function setup() {
 
 }
 
+var timeS
+function loup(timestamp){
 
-function loup(){
-    setup();
+     var diff= 0;
+    if (timeS){
+        diff = -timeS + timestamp;
+    }else {
+        timeS = timestamp;
+    }
+
+    //console.log(diff);
+    if (diff >= 10){
+       diff =0;
+        timeS = 0;
+        setup();
+        if(keys[37]){
+            posx += -5 ;
+            //vx -= friction;
+            sy = sHeight * 9;
+
+        }
+
+        if(keys[39]) {
+            posx += 5;
+            //vx += friction;
+            sy = sHeight *11;
+
+        }
+
+        //@@@@@@@@@ collisione  player @@@@@@@@@@\\
+
+        if (posx >=cv.width - 32){
+            posx = cv.width - 32;
+        }
+        if (posx < 0){
+            posx = 0;
+        }
+        //
+
+        vy += gravity;
+
+        posx += vx;
+        posy += vy;
+
+        if (posy >  720-92){
+            posy =  720-92;
+            jumping = false;
+
+        }
+
+        if ( keys[38] || keys[32] ) {
+            if(!jumping){
+                jumping = true;
+                vy += -(speed*2.5);
+                /*sy  = sHeight * 3;
+                sx  = Math.floor( cont % 9);*/
+            }
+        }
+
+        // With Platform.
+
+        // With Enime.
+        if (posx >= posxE  &&  posx <= posxE + 32 && posy >= posyE  &&  posy <= posyE + 32){
+            posx  = 10;
+            posy  = 720-64;
+
+        }
+        //with bonus
+        if (posx >= posxB  &&  posx <= posxB + 32 && posy >= posyB  &&  posy <= posyB + 32){
+            score++;
+            posxB = Math.floor( Math.random() * 1000 );
+            posyB = Math.floor( Math.random() * 100 );
+
+        }
+
+    }
+
 
     requestAnimationFrame(loup);
     //player.clearRect(posx,posy,32,32);
 
 
-    if(keys[37]){
-        posx -- ;
-        //vx -= friction;
-        sy = sHeight * 9;
 
-    }
-
-    if(keys[39]) {
-        posx ++;
-        //vx += friction;
-        sy = sHeight * 11;
-
-    }
-
-    //@@@@@@@@@ collisione  player @@@@@@@@@@\\
-
-    if (posx >=cv.width - 32){
-        posx = cv.width - 32;
-    }
-    if (posx < 0){
-        posx = 0;
-    }
-    //
-
-    vy += gravity;
-
-    posx += vx;
-    posy += vy;
-
-    if (posy >  720-92){
-        posy =  720-92;
-        jumping = false;
-
-    }
-
-    if ( keys[38] || keys[32] ) {
-        if(!jumping){
-            jumping = true;
-            vy += -(speed*2);
-            sy  = sHeight * 3;
-            sx  = Math.floor( cont % 5);
-        }
-    }
-
-    // With Platform.
-
-    // With Enime.
-    if (posx >= posxE  &&  posx <= posxE + 32 && posy >= posyE  &&  posy <= posyE + 32){
-        posx  = 10;
-        posy  = 720-64;
-
-    }
-    //with bonus
-    if (posx >= posxB  &&  posx <= posxB + 32 && posy >= posyB  &&  posy <= posyB + 32){
-        score++;
-        posxB = Math.floor( Math.random() * 1000 );
-        posyB = Math.floor( Math.random() * 100 );
-
-    }
 
 }
 
