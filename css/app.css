@@ -4,3 +4,42 @@ body, html{
     display: block;
     overflow: hidden;
 }
+.cv {
+    background-color: black;
+    font-family: monospace;
+    color:#48f848;
+    height: 800px;
+    width: 600px;
+    border: 1px solid black;
+    float: right;
+}
+.cv h1 {
+    text-align: center;
+}
+.cv p:before {
+    content: ">> ";
+}
+.cv p:last-child:after {
+    content:"|";
+    opacity: 0;
+    animation: cursor 1s infinite;
+}
+@keyframes cursor {
+    0% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+

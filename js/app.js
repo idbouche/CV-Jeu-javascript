@@ -1,98 +1,131 @@
 var cv      = null;
 var score   = 0;
-var background;
-var clouds;
-var floor;
-var hour;
-var period;
 
 var context = null;
-var player  = null;
-var enime   = null;
+var players  = null;
+var enimes   = null;
 var platform= null;
-var bonus   = null;
+var bonuss   = null;
 
 var textscore= null;
 
-var width  = 3000
 var bgsp   = 0.8;
-var x      = 0;
-var y      = 0;
-var posx   = 10;
-var posy   = 300;
 var xpl     = 0;
-
-var posxE  = 150;
-var posyE  = 500;
-
-var posxB  = Math.floor( Math.random() * 1000);
-var posyB  = Math.floor( Math.random() * 1000);
-
-var speed    = 8 ;
-var friction = 0.01;
-var gravity  = 0.4;
-var jumping  = false;
-var vy = 0;
-var vx = 0;
-
 var keys    = [];
-var sWidth  = 64;
-var sHeight = 64;
-var sx      = sWidth *  0 ;
-var sy      = sHeight * 11;
-var cont    = 0;
 
+var paragraph = document.createElement("P");
+var textparagraph= document.createTextNode("Water");
+
+var player ={
+    posx    :10,
+    posy    :300,
+    x       :0,
+    y       :0,
+    speed   :8,
+    friction:0.01,
+    gravity :0.4,
+    jump    :false,
+    vy      :0,
+    vx      :0,
+    width   :64,
+    height  :64,
+    cont    :0,
+    sx      :this.width*0,
+    sy      :this.height*11
+}
+var enime ={
+    posx    :150,
+    posy    :500,
+    x       :0,
+    y       :0,
+    speed   :8,
+    jump    :false,
+    vy      :0,
+    vx      :0,
+    width   :32,
+    height  :32,
+    cont    :0
+}
+var bonus ={
+    posx    :Math.floor( Math.random() * 1000),
+    posy    :Math.floor( Math.random() * 1000),
+    x       :0,
+    y       :0,
+    speed   :8,
+    jump    :false,
+    vy      :0,
+    vx      :0,
+    width   :32,
+    height  :32,
+    cont    :0
+}
 
 function setup() {
 
 
-    cv = document.getElementById("cv");
-    context  = cv.getContext('2d');
-    Bg       = cv.getContext('2d');
-    enime    = cv.getContext('2d');
-    platform = cv.getContext('2d');
-    bonus    = cv.getContext('2d');
-    textscore= cv.getContext('2d');
+    cv        = document.getElementById("cv");
+    context   = cv.getContext('2d');
+    Bg        = cv.getContext('2d');
+    enimes    = cv.getContext('2d');
+    platform  = cv.getContext('2d');
+    bonuss    = cv.getContext('2d');
+    textscore = cv.getContext('2d');
 
-    cv.width = innerWidth;
+    cv.width  = 600;
     cv.height = 800;
 
     var bg = new Image();
     bg.src = "../png/BG.png";
-    x      -= bgsp
-    context.drawImage(bg,x,y);
-    if (x <= -1279)
-        x = 0;
+    player.x      -= bgsp
+    context.drawImage(bg,player.x,player.y);
+    if (player.x <= -1279)
+        player.x = 0;
 
 
     var pl = new Image();
     pl.src = "../img/sprit.png";
-    player = cv.getContext('2d');
-    cont  += 0.2;
-    sx     = Math.floor(cont % 9);
+    players = cv.getContext('2d');
+    player.cont  += 0.2;
+    player.sx     = Math.floor(player.cont % 9);
 
-    player.beginPath();
-    context.drawImage(pl,sWidth * sx,sy,sWidth,sHeight,posx,posy,sWidth,sHeight);
+    players.beginPath();
+    context.drawImage(pl,
+                    player.width*player.sx,
+                    player.sy,
+                    player.width,
+                    player.height,
+                    player.posx,
+                    player.posy,
+                    player.width,
+                    player.height
+                     );
     //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-    player.closePath();
-    player.fill();
+    players.closePath();
+    players.fill();
 
 
     var pla = new Image();
     pla.src = "../png/Tile/2.png";
     var ptrn = platform.createPattern(pla, 'repeat');
     platform.fillStyle = ptrn;
-    platform.fillRect(xpl,720-32,cv.width, 128);
+    platform.fillRect(0,720-32,cv.width, 128);
 
-    bonus.fillStyle = "yellow";
-    bonus.fillRect(posxB,posyB,32,32);
+    bonuss.fillStyle = "yellow";
+    bonuss.fillRect(bonus.posx,bonus.posy,bonus.width,bonus.height);
 
-    enime.fillStyle = "red";
-    enime.fillRect(posxE,posyE,32,32);
+    enimes.fillStyle = "red";
+    enimes.fillRect(enime.posx,enime.posy,enime.width,enime.height);
 
     textscore.fillStyle = "white";
     textscore.fillText("Score : " +score,10,50);
 
+    var block = new Image();
+    block.src = "../png/Objects/StoneBlock32.png";
+    //var ptrn = platform.createPattern(block, 'repeat');
+    //platform.fillStyle = ptrn;
+    platform.drawImage(block,cv.width/2,cv.height-200,32,32);
+    platform.drawImage(block,cv.width/2+32,cv.height-200,32,32);
+    platform.drawImage(block,cv.width/2+64,cv.height-200,32,32);
 }
 
 var timeS
@@ -111,62 +144,65 @@ function loup(timestamp){
         timeS = 0;
         setup();
         if(keys[37]){
-            posx += -5 ;
+            player.posx += -5 ;
             //vx -= friction;
-            sy = sHeight * 9;
+            player.sy = player.height * 9;
 
         }
 
         if(keys[39]) {
-            posx += 5;
+            player.posx += 5;
             //vx += friction;
-            sy = sHeight *11;
+            player.sy = player.height *11;
 
         }
 
         //@@@@@@@@@ collisione  player @@@@@@@@@@\\
 
-        if (posx >=cv.width - 32){
-            posx = cv.width - 32;
+        if (player.posx >=cv.width - player.width){
+            player.posx = cv.width - player.width;
         }
-        if (posx < 0){
-            posx = 0;
+        if (player.posx < 0){
+            player.posx = 0;
         }
         //
 
-        vy += gravity;
+        player.vy += player.gravity;
 
-        posx += vx;
-        posy += vy;
+        player.posx += player.vx;
+        player.posy += player.vy;
 
-        if (posy >  720-92){
-            posy =  720-92;
-            jumping = false;
+        if (player.posy >  720-92){
+            player.posy =  720-92;
+            player.jump = false;
 
         }
 
         if ( keys[38] || keys[32] ) {
-            if(!jumping){
-                jumping = true;
-                vy += -(speed*2.5);
-                /*sy  = sHeight * 3;
-                sx  = Math.floor( cont % 9);*/
+            if(!player.jump){
+                player.jump = true;
+                player.vy += -(player.speed*2.5);
+                player.sy  = player.height * 3;
+                player.sx  = Math.floor( player.cont % 9);
             }
         }
 
         // With Platform.
 
         // With Enime.
-        if (posx >= posxE  &&  posx <= posxE + 32 && posy >= posyE  &&  posy <= posyE + 32){
-            posx  = 10;
-            posy  = 720-64;
+        if (player.posx >= enime.posx  &&  player.posx <= enime.posx + enime.width && player.posy >= enime.posy  &&  player.posy <= enime.posy + enime.height){
+            player.posx  = 10;
+            player.posy  = 720-64;
 
         }
         //with bonus
-        if (posx >= posxB  &&  posx <= posxB + 32 && posy >= posyB  &&  posy <= posyB + 32){
+        if (player.posx >= bonus.posx  &&  player.posx <= bonus.posx + bonus.width && player.posy >= bonus.posy  &&  player.posy <= bonus.posy + bonus.height){
             score++;
-            posxB = Math.floor( Math.random() * 1000 );
-            posyB = Math.floor( Math.random() * 100 );
+            bonus.posx = Math.floor( Math.random() * 1000 );
+            bonus.posy = Math.floor( Math.random() * 100 );
+
+            paragraph.appendChild(textparagraph);
+            document.getElementById("terminal").appendChild(paragraph);
 
         }
 
@@ -187,8 +223,8 @@ document.body.addEventListener("keydown", function(event) {
 
 document.body.addEventListener("keyup", function(event) {
     keys[event.keyCode] = false;
-    sy = sHeight * 11;
-    sx = 0;
+    player.sy = player.height * 11;
+    player.sx = 0;
 });
 
 
