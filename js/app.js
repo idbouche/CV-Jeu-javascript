@@ -9,16 +9,17 @@ var bonuss   = null;
 
 var textscore= null;
 
-var bgsp   = 0.8;
+var bgsp    = 0;
 var xpl     = 0;
 var keys    = [];
+var blockx ;
 
-var paragraph = document.createElement("P");
-var textparagraph= document.createTextNode("Water");
+var math = Math.floor( Math.random() * 1000);
+
 
 var player ={
     posx    :10,
-    posy    :300,
+    posy    :720-64,
     x       :0,
     y       :0,
     speed   :8,
@@ -60,6 +61,8 @@ var bonus ={
     cont    :0
 }
 
+
+
 function setup() {
 
 
@@ -78,8 +81,11 @@ function setup() {
     bg.src = "../png/BG.png";
     player.x      -= bgsp
     context.drawImage(bg,player.x,player.y);
-    if (player.x <= -1279)
+    if (player.x <= -1279){
         player.x = 0;
+    }
+
+
 
 
     var pl = new Image();
@@ -99,7 +105,6 @@ function setup() {
                     player.width,
                     player.height
                      );
-    //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     players.closePath();
     players.fill();
 
@@ -110,22 +115,14 @@ function setup() {
     platform.fillStyle = ptrn;
     platform.fillRect(0,720-32,cv.width, 128);
 
-    bonuss.fillStyle = "yellow";
-    bonuss.fillRect(bonus.posx,bonus.posy,bonus.width,bonus.height);
+    cBonus("yellow",math);
+    cBonus("blue",math);
+    cBonus("green",math);
 
-    enimes.fillStyle = "red";
-    enimes.fillRect(enime.posx,enime.posy,enime.width,enime.height);
 
     textscore.fillStyle = "white";
     textscore.fillText("Score : " +score,10,50);
 
-    var block = new Image();
-    block.src = "../png/Objects/StoneBlock32.png";
-    //var ptrn = platform.createPattern(block, 'repeat');
-    //platform.fillStyle = ptrn;
-    platform.drawImage(block,cv.width/2,cv.height-200,32,32);
-    platform.drawImage(block,cv.width/2+32,cv.height-200,32,32);
-    platform.drawImage(block,cv.width/2+64,cv.height-200,32,32);
 }
 
 var timeS
@@ -165,7 +162,8 @@ function loup(timestamp){
         if (player.posx < 0){
             player.posx = 0;
         }
-        //
+
+
 
         player.vy += player.gravity;
 
@@ -178,43 +176,107 @@ function loup(timestamp){
 
         }
 
+        //colision(4,250)
+
+
+
+        if (player.posx >= cv.width/2){
+            bgsp = 0.5;
+            enime.posx -= 1;
+            bonus.posx -= 1;
+
+        }
+
         if ( keys[38] || keys[32] ) {
             if(!player.jump){
                 player.jump = true;
-                player.vy += -(player.speed*2.5);
-                player.sy  = player.height * 3;
-                player.sx  = Math.floor( player.cont % 9);
+                player.vy -= (player.speed * 2);
             }
         }
 
-        // With Platform.
+        cEnmis("red", 100);
+        cEnmis("black",0);
+        cEnmis("red", 150);
 
-        // With Enime.
-        if (player.posx >= enime.posx  &&  player.posx <= enime.posx + enime.width && player.posy >= enime.posy  &&  player.posy <= enime.posy + enime.height){
-            player.posx  = 10;
-            player.posy  = 720-64;
+        cBlock(4,250,0);
+        cBlock(5,350,100);
+        cBlock(2,450,100);
 
-        }
         //with bonus
-        if (player.posx >= bonus.posx  &&  player.posx <= bonus.posx + bonus.width && player.posy >= bonus.posy  &&  player.posy <= bonus.posy + bonus.height){
-            score++;
-            bonus.posx = Math.floor( Math.random() * 1000 );
-            bonus.posy = Math.floor( Math.random() * 100 );
+        if (player.posx+player.width >= bonus.posx  &&
+            player.posx <= bonus.posx + bonus.width &&
+            player.posy + player.height >= bonus.posy  &&
+            player.posy <= bonus.posy + bonus.height){
 
+            score++;
+
+            var paragraph = document.createElement("P");
+            var textparagraph= document.createTextNode("Water");
             paragraph.appendChild(textparagraph);
             document.getElementById("terminal").appendChild(paragraph);
 
-        }
+            bonus.posx = Math.floor( Math.random() * 1000 );
+            bonus.posy = Math.floor( Math.random() * 100 );
 
+            if(bonus.posy <= cv.height - 400 && bonus.posy>= cv.height -100 &&
+              bonus.posx <=50 && bonus.posx >= cv.width-50){
+                bonus.posx = Math.floor( Math.random() * 1000 );
+                bonus.posy = Math.floor( Math.random() * 100 );
+            }
+        }
     }
 
-
     requestAnimationFrame(loup);
-    //player.clearRect(posx,posy,32,32);
+}
+var cBonus = function(color, n ){
+    bonuss.fillStyle = color;
+    bonuss.fillRect(n,n,bonus.width,bonus.height);
 
+}
 
+var cEnmis = function(color, n){
+    enimes.fillStyle = color;
+    enimes.fillRect(enime.posx + n,enime.posy,enime.width,enime.height);
+    if (player.posx + player.width>= enime.posx + n &&
+    player.posx <= enime.posx + enime.width + n  &&
+    player.posy+ player.height >= enime.posy  &&
+    player.posy <= enime.posy + enime.height){
+        player.posx  = 10;
+        player.posy  = 720-64;
+    }
+}
 
+var cBlock = function(n, p, x){
+    var block = new Image();
+    block.src = "../png/Objects/StoneBlock32.png";
+    blockx= 0 ;
+    if (player.posx >= cv.width/2){
+        blockx ++;
+    }
+    for (var i = 0; i< n ; i++){
 
+        players.beginPath();
+        platform.drawImage(block,
+                           blockx,
+                           0,
+                           32,32,
+                           cv.width/2+x+(32*i),
+                           cv.height-p,
+                           32,32
+                          );
+        players.closePath();
+        players.fill();
+    }
+
+    colision (n, p, x)
+}
+
+var colision = function(n, p, x){
+    if (player.posy >=cv.height- p - player.width && player.posx>=(cv.width/2)-36+x &&player.posx<=(cv.width/2)+(23*n)+x && player.posy <= cv.height - p + 22 ){
+        player.posy =cv.height - p - player.height;
+        player.jump = false;
+
+    }
 }
 
 document.body.addEventListener("keydown", function(event) {
