@@ -12,14 +12,14 @@ var textscore= null;
 var bgsp    = 0;
 var xpl     = 0;
 var keys    = [];
-var blockx ;
+var blockx  = 0;
 
 var math = Math.floor( Math.random() * 1000);
 
 
 var player ={
     posx    :10,
-    posy    :720-64,
+    posy    :308,
     x       :0,
     y       :0,
     speed   :8,
@@ -36,7 +36,7 @@ var player ={
 }
 var enime ={
     posx    :150,
-    posy    :500,
+    posy    :200,
     x       :0,
     y       :0,
     speed   :8,
@@ -45,7 +45,8 @@ var enime ={
     vx      :0,
     width   :32,
     height  :32,
-    cont    :0
+    cont    :0,
+    color   :''
 }
 var bonus ={
     posx    :Math.floor( Math.random() * 1000),
@@ -58,9 +59,18 @@ var bonus ={
     vx      :0,
     width   :32,
     height  :32,
-    cont    :0
+    cont    :0,
+    color   :''
 }
-
+var block ={
+    posx    :0,
+    posy    :0,
+    width   :0,
+    height  :32,
+    color   :'',
+    text    :''
+}
+console.log(innerWidth);
 
 
 function setup() {
@@ -74,16 +84,10 @@ function setup() {
     bonuss    = cv.getContext('2d');
     textscore = cv.getContext('2d');
 
-    cv.width  = 600;
-    cv.height = 800;
+    cv.width  = 3000;
+    cv.height = 400;
 
-    var bg = new Image();
-    bg.src = "../png/BG.png";
-    player.x      -= bgsp
-    context.drawImage(bg,player.x,player.y);
-    if (player.x <= -1279){
-        player.x = 0;
-    }
+
 
 
 
@@ -113,7 +117,7 @@ function setup() {
     pla.src = "../png/Tile/2.png";
     var ptrn = platform.createPattern(pla, 'repeat');
     platform.fillStyle = ptrn;
-    platform.fillRect(0,720-32,cv.width, 128);
+    platform.fillRect(0,cv.height-32,cv.width, 128);
 
     cBonus("yellow",math);
     cBonus("blue",math);
@@ -122,6 +126,8 @@ function setup() {
 
     textscore.fillStyle = "white";
     textscore.fillText("Score : " +score,10,50);
+
+
 
 }
 
@@ -140,19 +146,38 @@ function loup(timestamp){
        diff =0;
         timeS = 0;
         setup();
-        if(keys[37]){
-            player.posx += -5 ;
-            //vx -= friction;
-            player.sy = player.height * 9;
 
+        if (player.posx >= 1000){
+            bgsp = 0.8;
+            if(keys[37]){
+                bonus.posx += 2;
+                enime.posx -= 2;
+                blockx -=2;
+                player.sy = player.height * 9;
+            }
+            if(keys[39]) {
+                bonus.posx -= 2;
+                enime.posx -= 2;
+                blockx +=2;
+                player.sy = player.height *11;
+            }
+        }else{
+            if(keys[37]){
+                player.posx += -5 ;
+                // vx -= friction;
+                player.sy = player.height * 9;
+
+            }
+
+            if(keys[39]) {
+                player.posx += 5;
+                //vx += friction;
+                player.sy = player.height *11;
+
+            }
         }
 
-        if(keys[39]) {
-            player.posx += 5;
-            //vx += friction;
-            player.sy = player.height *11;
 
-        }
 
         //@@@@@@@@@ collisione  player @@@@@@@@@@\\
 
@@ -170,8 +195,8 @@ function loup(timestamp){
         player.posx += player.vx;
         player.posy += player.vy;
 
-        if (player.posy >  720-92){
-            player.posy =  720-92;
+        if (player.posy >=  cv.height-92){
+            player.posy =  cv.height-92;
             player.jump = false;
 
         }
@@ -180,12 +205,7 @@ function loup(timestamp){
 
 
 
-        if (player.posx >= cv.width/2){
-            bgsp = 0.5;
-            enime.posx -= 1;
-            bonus.posx -= 1;
 
-        }
 
         if ( keys[38] || keys[32] ) {
             if(!player.jump){
@@ -195,88 +215,91 @@ function loup(timestamp){
         }
 
         cEnmis("red", 100);
-        cEnmis("black",0);
+        cEnmis("blue",0);
         cEnmis("red", 150);
 
-        cBlock(4,250,0);
-        cBlock(5,350,100);
-        cBlock(2,450,100);
 
-        //with bonus
-        if (player.posx+player.width >= bonus.posx  &&
-            player.posx <= bonus.posx + bonus.width &&
-            player.posy + player.height >= bonus.posy  &&
-            player.posy <= bonus.posy + bonus.height){
 
-            score++;
+        cBlock(400,280,'javascript','red');
+        cBlock(559,200,'html','green');
+        cBlock(800,280,'mongoDB','blue');
 
-            var paragraph = document.createElement("P");
-            var textparagraph= document.createTextNode("Water");
-            paragraph.appendChild(textparagraph);
-            document.getElementById("terminal").appendChild(paragraph);
-
-            bonus.posx = Math.floor( Math.random() * 1000 );
-            bonus.posy = Math.floor( Math.random() * 100 );
-
-            if(bonus.posy <= cv.height - 400 && bonus.posy>= cv.height -100 &&
-              bonus.posx <=50 && bonus.posx >= cv.width-50){
-                bonus.posx = Math.floor( Math.random() * 1000 );
-                bonus.posy = Math.floor( Math.random() * 100 );
-            }
-        }
     }
-
+    var getr = getRandomIntInclusive(80,320);
     requestAnimationFrame(loup);
 }
 var cBonus = function(color, n ){
-    bonuss.fillStyle = color;
-    bonuss.fillRect(n,n,bonus.width,bonus.height);
+    bonus.color = color;
+    bonus.posx = n;
+    bonuss.fillStyle = bonus.color;
+    bonuss.fillRect(bonus.posx,bonus.posy,bonus.width,bonus.height);
+    if (colision(player,bonus)){
+        bonus.posx  =  getRandomIntInclusive(80,320);
+        bonus.posy  =  getRandomIntInclusive(0,500);
+
+    }
 
 }
 
 var cEnmis = function(color, n){
-    enimes.fillStyle = color;
-    enimes.fillRect(enime.posx + n,enime.posy,enime.width,enime.height);
-    if (player.posx + player.width>= enime.posx + n &&
-    player.posx <= enime.posx + enime.width + n  &&
-    player.posy+ player.height >= enime.posy  &&
-    player.posy <= enime.posy + enime.height){
+    enime.color = color;
+    enime.posx = n;
+    enimes.fillStyle = enime.color;
+    enimes.fillRect(enime.posx , enime.posy,enime.width,enime.height);
+    if (colision(player,enime)){
         player.posx  = 10;
-        player.posy  = 720-64;
+        player.posy  = cv.height-64;
     }
+
 }
 
-var cBlock = function(n, p, x){
-    var block = new Image();
-    block.src = "../png/Objects/StoneBlock32.png";
-    blockx= 0 ;
-    if (player.posx >= cv.width/2){
-        blockx ++;
+var cBlock = function( x, y,text,color){
+    block.posx = x;
+    block.posy = y;
+    block.color = color;
+    block.text = text;
+    switch(text) {
+        case 'html':
+            block.width = 57;
+            break;
+        case 'javascript':
+            block.width = 127;
+            break;
+        case 'mongoDB':
+            block.width = 84;
+            break;
+        case 'nodejs':82;
+            block.width
+            break;
     }
-    for (var i = 0; i< n ; i++){
-
-        players.beginPath();
-        platform.drawImage(block,
-                           blockx,
-                           0,
-                           32,32,
-                           cv.width/2+x+(32*i),
-                           cv.height-p,
-                           32,32
-                          );
-        players.closePath();
-        players.fill();
+    block.width
+    context.fillStyle = block.color;
+    context.font="30px Arial";
+    block.text = text;
+    context.fillText(block.text,block.posx,block.posy,block.width);
+    console.log(block.width);
+    console.log("block x: "+block.posx);
+    console.log("player x: "+player.posx)
+    if (colision(player,block)){
+        player.posy  = block.posy-80;
     }
 
-    colision (n, p, x)
+
 }
 
-var colision = function(n, p, x){
-    if (player.posy >=cv.height- p - player.width && player.posx>=(cv.width/2)-36+x &&player.posx<=(cv.width/2)+(23*n)+x && player.posy <= cv.height - p + 22 ){
-        player.posy =cv.height - p - player.height;
-        player.jump = false;
 
-    }
+var rangeIntersect = function(min0, max0, min1, max1) {
+    return Math.max(min0, max0) >= Math.min(min1, max1) &&
+        Math.min(min0, max0) <= Math.max(min1, max1);
+}
+
+var colision = function(r0, r1) {
+    return rangeIntersect(r0.posx, r0.posx + r0.width, r1.posx, r1.posx + r1.width) &&
+        rangeIntersect(r0.posy, r0.posy + r0.height, r1.posy, r1.posy + r1.height);
+}
+
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min +1)) + min;
 }
 
 document.body.addEventListener("keydown", function(event) {
