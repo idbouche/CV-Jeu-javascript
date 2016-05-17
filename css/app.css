@@ -60,6 +60,7 @@ article {
     top:0; left:0;
     overflow: hidden;
     animation: blur 11s infinite;
+    background-color: azure;
 }
 @keyframes blur {
     23% {filter: url(#none);}
