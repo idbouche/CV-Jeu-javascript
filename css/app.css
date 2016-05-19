@@ -3,44 +3,33 @@ body, html{
     margin: 0;
     display: block;
     overflow: hidden;
+    height: 100%;
+}
+.body{
+    max-height: 100%;
+}
+#cv{
+    position: absolute;
+
 }
 .cv {
+    position: absolute;
     background-color: black;
     font-family: monospace;
-    color:#48f848;
-    height: 800px;
-    width: 600px;
+    color: #FfFfFf;
+    height: 43px;
+    width: 10000px;
     border: 1px solid black;
-    float: right;
+    /* float: right; */
+    top: 368px;
 }
-.cv h1 {
-    text-align: center;
+.score{
+    color: white;
+    position: absolute;
+    top: 20px;
+    left: 11px;
 }
-.cv p:before {
-    content: ">> ";
-}
-.cv p:last-child:after {
-    content:"|";
-    opacity: 0;
-    animation: cursor 1s infinite;
-}
-@keyframes cursor {
-    0% {
-        opacity: 0;
-    }
-    40% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
+
 
 *, *:before, *:after {
     box-sizing: inherit;
@@ -60,7 +49,7 @@ article {
     top:0; left:0;
     overflow: hidden;
     animation: blur 11s infinite;
-    background-color: azure;
+    background-color: black;
 }
 @keyframes blur {
     23% {filter: url(#none);}
@@ -138,3 +127,32 @@ pre:nth-child(4n) {
 }
 
 
+#terminal h1{
+    position:absolute;
+    top: -25px;
+}
+.conpetanc{
+    position: absolute;
+    right: 0;
+    top: 51px;
+
+}
+.myProgress {
+    position: relative;
+    width: 30px;
+    margin: 5px;
+    height: 100px;
+    background-color: #4CAF50;
+    float: left;
+}
+
+#myBar {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: orangered;
+    display: inline;
+}
+.clear{
+    clear: left;
+}

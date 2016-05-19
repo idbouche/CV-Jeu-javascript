@@ -8,6 +8,8 @@ var platform= null;
 var bonuss   = null;
 
 var textscore= null;
+var textConpetence= 'TEST';
+var textResultats ='';
 
 var bgsp    = 0;
 var xpl     = 0;
@@ -21,7 +23,7 @@ var player ={
     y       :0,
     speed   :8,
     friction:0.01,
-    gravity :0.3,
+    gravity :0.4,
     jump    :false,
     vy      :0,
     vx      :0,
@@ -33,8 +35,8 @@ var player ={
 }
 var createEnmi= function(){
     return {
-        posx    :150,
-        posy    :200,
+        posx    :2250,
+        posy    :100,
         x       :0,
         y       :0,
         speed   :8,
@@ -51,7 +53,7 @@ var createEnmi= function(){
 }
 var createBonus= function(){
     return {
-    posx    :2500,
+    posx    :2000,
     posy    :100,
     x       :0,
     y       :0,
@@ -79,6 +81,7 @@ var createBlock= function(){
 var tabEnmis = [];
 var tabblock = [];
 var tabbonus = [];
+var tabtext  = [];
 
 //ctreat(tabEnmis,createEnmi)
 var ctreat = function(T,O){
@@ -137,9 +140,13 @@ function setup() {
     platform.fillStyle = ptrn;
     platform.fillRect(0,cv.height-32,cv.width, 128);
 
-    textscore.fillStyle = "black";
+    textscore.fillStyle = "#ffffff";
     textscore.font="30px Arial";
-    textscore.fillText("Score : " +score,10,50);
+    textscore.fillText("             " +score,10,50);
+
+    textscore.fillStyle = "#ffffff";
+    textscore.font="30px Arial";
+    textscore.fillText("Resultats : " +textResultats,window.innerWidth-400,50);
 
 }
 
@@ -208,27 +215,39 @@ function loup(timestamp){
                 player.vy -= (player.speed * 2);
             }
         }
+        var h1= 350;
+        var h2=0;
         for (var j=0; j<5; j++){
-            cEnmis(tabEnmis[j]);
+
+            cEnmis(tabEnmis[j],h1,h2);
+            h1 += -40;
+            h2 += 5;
 
         }
 
-        cBlock(tabblock[0],400,270,'javascript','red');
-        cBlock(tabblock[1],559,200,'html','green');
-        cBlock(tabblock[2],800,270,'mongoDB','blue');
+        cBlock(tabblock[0],400,270,'#c43235',textConpetence);
+        cBlock(tabblock[1],559,200,'#c43235',textConpetence);
+        cBlock(tabblock[2],800,270,'#c43235',textConpetence);
 
-        cBonus(tabbonus[0],"yellow",230,0);
-        cBonus(tabbonus[1],"blue",180,10);
-        cBonus(tabbonus[2],"green",300,20);
-        cBonus(tabbonus[3],"pink",350,5);
+        cBonus(tabbonus[0],"#e91e63",230,0,'H');
+        cBonus(tabbonus[1],"#e91e63",180,10,'T');
+        cBonus(tabbonus[2],"#e91e63",300,20,'M');
+        cBonus(tabbonus[3],"#e91e63",350,5,'L');
+        cBonus(tabbonus[4],"#e91e63",320,15,'C');
 
     }
 
     requestAnimationFrame(loup);
 }
-var cBonus = function(B,color,H1,H2 ){
+var cBonus = function(B,color,H1,H2,text ){
     B.color = color;
-    bonuss.fillStyle = B.color;     bonuss.fillRect(B.posx,B.posy,B.width,B.height);
+    bonuss.fillStyle = "rgba(0,0,0,0)";
+    bonuss.fillRect(B.posx,B.posy,B.width,B.height);
+
+    context.font="30px Arial";
+    B.text = text;
+    context.fillStyle = B.color;
+    context.fillText(B.text,B.posx,B.posy+25,B.width);
     if(B.posx >= cv.width || B.posx <= 0){
         B.vx *= -1;
     }
@@ -239,56 +258,76 @@ var cBonus = function(B,color,H1,H2 ){
     B.posy += B.vy;
 
     if (colision(player,B)){
-    B.posx  = 2500;
-    score +=1;
-    var phrase ="Vous avez débloqué une compétence  "
-    var copitence ;
-    var balise = document.createElement("P");
-    var terminal = document.getElementById('terminal');
-    var affichage = function(T){
-        copitence = phrase + T;
-        var textnode = document.createTextNode(copitence);
-        balise.appendChild(textnode);
-        terminal.appendChild(balise);
-    }
-    switch(score) {
-        case 5:
-            affichage("Html");
-            break;
-        case 10:
-            affichage("Css");
-            break;
-        case 15:
-            affichage("Javascript");
-            break;
-        case 20:
-            affichage("Boostrapp");
-            affichage("Jquery");
-            break;
-        case 25:
-            affichage("Angolare js");
-            break;
-        case 30:
-            affichage("MongoDB");
-            affichage("Expressjs");
-            break;
-        case 35:
-            affichage("Nodejs");
-            break;
-        case 35:
-            affichage("Php");
-            affichage("Django python");
-            break;
+
+        console.log(B.text);
+        console.log(tabtext);
+        B.posx  = 2500;
+        score +=1;
+        /*var phrase ="Vous avez débloqué une compétence  "
+        var copitence ;
+        var balise = document.createElement("P");
+        var terminal = document.getElementById('terminal');
+        var affichage = function(T){
+            copitence = phrase + T;
+            var textnode = document.createTextNode(copitence);
+            balise.appendChild(textnode);
+            terminal.appendChild(balise);
+        }*/
+        var mybar = 'myBar';
+        var Hvalue = 100 - (score * 25);
+        window.document.getElementById(mybar).style.height =Hvalue+"%";
+
+        var res = textConpetence.toUpperCase().split("");
+        for (var i=0; i<= res.length; i++){
+            if(res[i] == B.text){
+                tabtext[i]=B.text;
+                console.log("push")
+            }
+        }
+        textResultats = tabtext.join("");
+        switch(score) {
+            case 5:
+                //affichage("Html ");
+                textConpetence = "HTML"
+                break;
+            case 10:
+                //affichage("Css ");
+                textConpetence ="CSS"
+                break;
+            case 15:
+                //affichage("Javascript ");
+                textConpetence ="JAVASCRIPT"
+                break;
+            case 20:
+                //affichage("Boostrapp ");
+                textConpetence ="BOOSTRAPP" + "JQUERY"
+                //affichage("Jquery ");
+                break;
+            case 25:
+                //affichage("Angolare js ");
+                textConpetence ="ANGOLAREJS"
+                break;
+            case 30:
+                //affichage("MongoDB ");
+                //affichage("Expressjs ");
+                textConpetence ="MONGODB "+"EXPRESSJS"
+                break;
+            case 35:
+                //affichage("Nodejs ");
+                textConpetence ="NODEJS"
+                break;
+            case 35:
+                //affichage("Php ");
+                //affichage("Django python ");
+                textConpetence ="PHP " +"DJANGO PYTHON"
+                break;
+        }
+
     }
 
-    if(score == 2){
+ }
 
-    }
-    }
-
-}
-
-var cEnmis = function(E){
+var cEnmis = function(E,H1,H2){
     var el;
     var e = new Image();
     e.src = "../img/smith.png";
@@ -311,7 +350,7 @@ var cEnmis = function(E){
     if(E.posx >= cv.width || E.posx <= 0){
         E.vx *= -1;
     }
-    if(E.posy+E.height >= cv.height-50 || E.posy <= 0){
+    if(E.posy+E.height >= H1 || E.posy <= H2){
         E.vy *= -1;
     }
 
@@ -323,30 +362,37 @@ var cEnmis = function(E){
     E.posy += E.vy;
 }
 
-var cBlock = function( BL,x, y,text,color){
+var cBlock = function( BL,x, y,color,text){
     BL.posx = x;
     BL.posy = y;
     BL.color = color;
     BL.text = text;
+    console.log(text)
     switch(text) {
-        case 'html':
+        case 'HTML'||'CSS':
             BL.width = 57;
             break;
-        case 'javascript':
-            BL.width = 127;
+        case 'JAVASCRIPT'||'BOOSTRAPP'||'ANGOLAREJS':
+            BL.width = 130;
             break;
-        case 'mongoDB':
+        case 'MONGODB':
+            BL.width = 95;
+            break;
+        case 'NODEJS':
             BL.width = 90;
             break;
-        case 'nodejs':
-            BL.width = 90;
+        case 'DJANGO PYTHON':
+            BL.width = 180;
+            break;
+        case 'TEST':
+            BL.width = 50;
             break;
     }
     context.fillStyle = "rgba(0,0,0,0)";
     context.fillRect(BL.posx,BL.posy,BL.width,BL.height);
     context.fillStyle = BL.color;
     context.font="30px Arial";
-    BL.text = text;
+    console.log(BL.text);
     context.fillText(BL.text,BL.posx,BL.posy+25,BL.width);
     if (colision(player,BL,"b")){
         player.posy  = BL.posy - player.height;
