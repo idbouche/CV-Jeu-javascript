@@ -1,5 +1,6 @@
 var cv      = null;
 var score   = 0;
+var live   = 4;
 
 var context = null;
 var players  = null;
@@ -8,8 +9,10 @@ var platform= null;
 var bonuss   = null;
 
 var textscore= null;
-var textConpetence= 'TEST';
+var textConpetence= 'CSS';
 var textResultats ='';
+var tabHeight = {H2:[350,300,330,250,310,345,290,280,240,260,320,200,270,230,190,210,370],
+                 H1:[35,30,0,20,10,35,90,28,40,60,32,20,27,23,10,21,30]}
 
 var bgsp    = 0;
 var xpl     = 0;
@@ -35,8 +38,8 @@ var player ={
 }
 var createEnmi= function(){
     return {
-        posx    :2250,
-        posy    :100,
+        posx    :1400,
+        posy    :80,
         x       :0,
         y       :0,
         speed   :8,
@@ -48,23 +51,27 @@ var createEnmi= function(){
         cont    :0,
         color   :'',
         sx      :this.width*0,
-        sy      :4
+        sy      :4,
+        h1      :350,
+        h2      :1
     }
 }
 var createBonus= function(){
     return {
-    posx    :2000,
-    posy    :100,
-    x       :0,
-    y       :0,
-    speed   :8,
-    jump    :false,
-    vy      :2,
-    vx      :2,
-    width   :32,
-    height  :32,
-    cont    :0,
-    color   :''
+        posx    :1600,
+        posy    :110,
+        x       :0,
+        y       :0,
+        speed   :8,
+        jump    :false,
+        vy      :2,
+        vx      :2,
+        width   :32,
+        height  :32,
+        cont    :0,
+        color   :'',
+        h1      :390,
+        h2      :3
     }
 }
 var createBlock= function(){
@@ -85,21 +92,18 @@ var tabtext  = [];
 
 //ctreat(tabEnmis,createEnmi)
 var ctreat = function(T,O){
-    var posx = 10;
-    var posy = 20;
-    for (var i=0; i<5; i++){
-        posx += 100;
-        posy += 5;
-        var enime = O();
-        T.push(enime);
-        T[i].posx +=posx;
-        T[i].posy +=posy;
+    var posx= 350;
+    var posy=0;
+    for (var i=0; i<17; i++){
+        var objet = O();
+        T.push(objet);
+        O().posx += 5;
+
     }
 }
 ctreat(tabEnmis,createEnmi)
 ctreat(tabbonus,createBonus)
 ctreat(tabblock,createBlock)
-console.log(tabEnmis);
 function setup() {
 
     cv        = document.getElementById("cv");
@@ -110,11 +114,11 @@ function setup() {
     bonuss    = cv.getContext('2d');
     textscore = cv.getContext('2d');
 
-    cv.width  = 3000;
+    cv.width  = 1800;
     cv.height = 400;
 
     var pl = new Image();
-    pl.src = "../img/sprit.png";
+    pl.src = "img/sprit.png";
     players = cv.getContext('2d');
     player.cont  += 0.2;
     player.sx     = Math.floor(player.cont % 9);
@@ -133,20 +137,18 @@ function setup() {
     players.closePath();
     players.fill();
 
-
-    var pla = new Image();
-    pla.src = "../png/Tile/2.png";
-    var ptrn = platform.createPattern(pla, 'repeat');
-    platform.fillStyle = ptrn;
-    platform.fillRect(0,cv.height-32,cv.width, 128);
+    textscore.fillStyle = "#ffffff";
+    textscore.font=" bold 30px Monospace";
+    textscore.fillText("      " +score,10,50);
 
     textscore.fillStyle = "#ffffff";
-    textscore.font="30px Arial";
-    textscore.fillText("             " +score,10,50);
+    textscore.font=" bold 30px Monospace";
+    textscore.fillText("Lives : " +live,200,50);
 
     textscore.fillStyle = "#ffffff";
-    textscore.font="30px Arial";
-    textscore.fillText("Resultats : " +textResultats,window.innerWidth-400,50);
+    textscore.font=" bold 30px Monospace";
+    textscore.fillText("Resultats : " +textResultats,window.innerWidth-450,50);
+
 
 }
 
@@ -187,6 +189,7 @@ function loup(timestamp){
                 player.posx += 5;
                 //vx += friction;
                 player.sy = player.height *11;
+                document.getElementById("start").style.display = 'none';
 
             }
         }
@@ -215,25 +218,21 @@ function loup(timestamp){
                 player.vy -= (player.speed * 2);
             }
         }
-        var h1= 350;
-        var h2=0;
-        for (var j=0; j<5; j++){
 
-            cEnmis(tabEnmis[j],h1,h2);
-            h1 += -40;
-            h2 += 5;
-
+        for (var j=0; j<3; j++){
+            tabEnmis[j].h1 = tabHeight.H2[j];
+            tabEnmis[j].h2 = tabHeight.H1[j];
+            cEnmis(tabEnmis[j],tabEnmis[j].h1,tabEnmis[j].h2);
         }
 
-        cBlock(tabblock[0],400,270,'#c43235',textConpetence);
-        cBlock(tabblock[1],559,200,'#c43235',textConpetence);
-        cBlock(tabblock[2],800,270,'#c43235',textConpetence);
+        cBlock(tabblock[0],400,270,'#e91e63',textConpetence);
+        cBlock(tabblock[1],559,200,'#e91e63',textConpetence);
+        cBlock(tabblock[2],800,270,'#e91e63',textConpetence);
 
-        cBonus(tabbonus[0],"#e91e63",230,0,'H');
-        cBonus(tabbonus[1],"#e91e63",180,10,'T');
-        cBonus(tabbonus[2],"#e91e63",300,20,'M');
-        cBonus(tabbonus[3],"#e91e63",350,5,'L');
-        cBonus(tabbonus[4],"#e91e63",320,15,'C');
+        for (var i = 0; i< textConpetence.length; i++){                                    cBonus(tabbonus[i],"#e91e63",tabbonus[i].h1,tabbonus[i].h2,textConpetence[i]);
+            tabbonus[i].h1 = tabHeight.H2[i];
+            tabbonus[i].h2 = tabHeight.H1[i];
+        }
 
     }
 
@@ -244,7 +243,7 @@ var cBonus = function(B,color,H1,H2,text ){
     bonuss.fillStyle = "rgba(0,0,0,0)";
     bonuss.fillRect(B.posx,B.posy,B.width,B.height);
 
-    context.font="30px Arial";
+    context.font="bold 30pt Monospace";
     B.text = text;
     context.fillStyle = B.color;
     context.fillText(B.text,B.posx,B.posy+25,B.width);
@@ -259,78 +258,71 @@ var cBonus = function(B,color,H1,H2,text ){
 
     if (colision(player,B)){
 
-        console.log(B.text);
-        console.log(tabtext);
-        B.posx  = 2500;
+        B.posx  = 1400;
         score +=1;
-        /*var phrase ="Vous avez débloqué une compétence  "
-        var copitence ;
-        var balise = document.createElement("P");
-        var terminal = document.getElementById('terminal');
-        var affichage = function(T){
-            copitence = phrase + T;
-            var textnode = document.createTextNode(copitence);
-            balise.appendChild(textnode);
-            terminal.appendChild(balise);
-        }*/
-        var mybar = 'myBar';
-        var Hvalue = 100 - (score * 25);
-        window.document.getElementById(mybar).style.height =Hvalue+"%";
-
         var res = textConpetence.toUpperCase().split("");
         for (var i=0; i<= res.length; i++){
             if(res[i] == B.text){
                 tabtext[i]=B.text;
-                console.log("push")
             }
         }
         textResultats = tabtext.join("");
-        switch(score) {
-            case 5:
-                //affichage("Html ");
-                textConpetence = "HTML"
+
+        switch(textResultats) {
+            case "CSS":
+                bar('myBar');
+                tabtext=[];
+                textConpetence = "HTML";
                 break;
-            case 10:
-                //affichage("Css ");
-                textConpetence ="CSS"
+            case "HTML":
+                bar('myBar2');
+                tabtext=[];
+                textConpetence ="NODEJS";
                 break;
-            case 15:
-                //affichage("Javascript ");
-                textConpetence ="JAVASCRIPT"
+            case "NODEJS":
+                bar('myBar3');
+                tabtext=[];
+                textConpetence ="JAVASCRIPT";
                 break;
-            case 20:
-                //affichage("Boostrapp ");
-                textConpetence ="BOOSTRAPP" + "JQUERY"
-                //affichage("Jquery ");
+            case "JAVASCRIPT":
+                bar('myBar4');
+                tabtext=[];
+                textConpetence ="ANGOLAREJS";
                 break;
-            case 25:
-                //affichage("Angolare js ");
-                textConpetence ="ANGOLAREJS"
+            case "ANGOLAREJS":
+                bar('myBar5');
+                tabtext=[];
+                textConpetence ="BOOSTRAPPJQUERY";
                 break;
-            case 30:
-                //affichage("MongoDB ");
-                //affichage("Expressjs ");
-                textConpetence ="MONGODB "+"EXPRESSJS"
+            case "BOOSTRAPPJQUERY":
+                bar('myBar6');
+                tabtext=[];
+                textConpetence ="PHPDJANGOPYTHON";
                 break;
-            case 35:
-                //affichage("Nodejs ");
-                textConpetence ="NODEJS"
+            case "PHPDJANGOPYTHON":
+                bar('myBar7');
+                tabtext=[];
+                textConpetence ="MONGODBEXPRESSJS";
+
                 break;
-            case 35:
-                //affichage("Php ");
-                //affichage("Django python ");
-                textConpetence ="PHP " +"DJANGO PYTHON"
+            case "MONGODBEXPRESSJS":
+                bar('myBar8');
+                game();
                 break;
         }
 
     }
 
  }
+var bar = function(mybar){
+    var Hvalue = 100 -  (tabtext.length*100/textConpetence.length);
+    window.document.getElementById(mybar).style.height = Hvalue + "%";
 
+}
 var cEnmis = function(E,H1,H2){
     var el;
     var e = new Image();
-    e.src = "../img/smith.png";
+    e.src = "img/smith.png";
     el = cv.getContext('2d');
     E.cont  += 0.2;
     E.sx     = Math.floor(E.cont % 8);
@@ -355,8 +347,11 @@ var cEnmis = function(E,H1,H2){
     }
 
     if (colision(player,E)){
-        player.posx  = 10;
-        player.posy  = cv.height-64;
+        live--;
+        E.posx  = 1400;
+        if(live === 0){
+            show();
+        }
     }
     E.posx += E.vx;
     E.posy += E.vy;
@@ -367,21 +362,26 @@ var cBlock = function( BL,x, y,color,text){
     BL.posy = y;
     BL.color = color;
     BL.text = text;
-    console.log(text)
+
     switch(text) {
-        case 'HTML'||'CSS':
+        case 'HTML':
+        case'CSS':
+        case'PHP':
             BL.width = 57;
             break;
-        case 'JAVASCRIPT'||'BOOSTRAPP'||'ANGOLAREJS':
+        case'JAVASCRIPT':
+        case'BOOSTRAPP':
+        case'ANGOLAREJS':
             BL.width = 130;
             break;
         case 'MONGODB':
+        case'EXPRESS':
             BL.width = 95;
             break;
         case 'NODEJS':
             BL.width = 90;
             break;
-        case 'DJANGO PYTHON':
+        case 'DJANGOPYTHON':
             BL.width = 180;
             break;
         case 'TEST':
@@ -391,8 +391,9 @@ var cBlock = function( BL,x, y,color,text){
     context.fillStyle = "rgba(0,0,0,0)";
     context.fillRect(BL.posx,BL.posy,BL.width,BL.height);
     context.fillStyle = BL.color;
-    context.font="30px Arial";
-    console.log(BL.text);
+    context.font="blod 30px Monospace";
+
+
     context.fillText(BL.text,BL.posx,BL.posy+25,BL.width);
     if (colision(player,BL,"b")){
         player.posy  = BL.posy - player.height;
@@ -433,7 +434,16 @@ document.body.addEventListener("keyup", function(event) {
 window.addEventListener("load",function(){
     loup();
 });
-
+ var show = function(){
+     document.getElementById("gameover").style.display = 'block';
+     document.getElementById("game").style.display = 'none';
+     document.getElementById("show").style.display = 'none';
+ }
+ var game = function(){
+     document.getElementById("gameover").style.display = 'none';
+     document.getElementById("game").style.display = 'block';
+     document.getElementById("show").style.display = 'block';
+ }
 
 
 
