@@ -170,7 +170,7 @@ pre:nth-child(4n) {
 #start{
     position: absolute;
     top: 450px;
-    left: 200px;
+    left: 201px;
     color: deeppink;
     font-family: monospace;
     font-weight: bold;
