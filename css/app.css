@@ -51,6 +51,7 @@ article {
     overflow: hidden;
     animation: blur 11s infinite;
     background-color: black;
+    -ms-locale: "ar";
 }
 @keyframes blur {
     23% {filter: url(#none);}
@@ -75,15 +76,29 @@ pre {
     letter-spacing: .3rem;
     word-spacing: 1rem;
     padding: 1rem 0;
+    -ms-writing-mode: vertical-rl;
+    -moz-writing-mode: vertical-rl;
+    -webkit-writing-mode: vertical-rl;
+    writing-mode: tb-rl;
     writing-mode: vertical-rl;
+    -ms-text-orientation:upright;
     -webkit-text-orientation: upright;
     -moz-text-orientation: upright;
     text-orientation: upright;
+    -ms-transform: translatey(-100%);
+    -webkit-transform: translatey(-100%);
+    -moz-transform: translatey(-100%);
     transform: translatey(-100%);
     animation: matrix linear 30s infinite;
+    -ms-locale: "ar";
+    -moz-locale: "ar";
+    -webkit-locale: "ar";
 }
 @keyframes matrix {
     100% {
+        -ms-transform:translatey(100%);
+        -webkit-transform: translatey(100%);
+        -moz-transform: translatey(100%);
         transform: translatey(100%);
     }
 }
@@ -158,9 +173,16 @@ pre:nth-child(4n) {
     clear: left;
 }
 #gameover{
+    color: white;
     display: none;
     text-align: center;
     padding-top: 150px;
+}
+#gameover span{
+
+    padding: 5px;
+    border: 2px solid white;
+    background-color: deeppink;
 }
 #show{
     position: absolute;
@@ -187,4 +209,103 @@ a{
     color: white;
     padding-bottom: 25px;
 
+}
+.accueil{
+    margin: 0 auto;
+    padding-top: 50px;
+    display: block;
+    width: 100vw;
+    height: 100vw;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    text-align: center;
+}
+.accueil span{
+    border: 2px solid white;
+    background-color: deeppink;
+    padding: 5px;
+    font-family: monospace;
+
+}
+i {
+
+    padding: 5px;
+    border: 2px solid white;
+    background-color: deeppink;
+}
+#game {
+    display: none;
+}
+.accueil p{
+    padding-top: 20px;
+    font-family: monospace;
+    font-size: 20px;
+
+}
+.accueil h1{
+    padding-top: 20px;
+    font-family: monospace;
+    font-size: 30px;
+
+}
+.accueil h2{
+    font-family: monospace;
+    font-size: 25px;
+
+}
+
+.accueil span{
+    font-size: 20px;
+    padding: 5px;
+    border: 2px solid white;
+    background-color: deeppink;
+    font-family: monospace;
+}
+
+#css{
+    display:none;
+    width: 4%
+}
+#html{
+    display:none;
+    width: 4%
+}
+#javascript{
+    display:none;
+    width: 5%
+}
+#angular{
+    display:none;
+    width: 5%
+}
+#bootstrap{
+    display:none;
+    width: 5%
+}
+#express{
+    display:none;
+    width: 15%
+}
+#jquery{
+    display:none;
+    width: 15%
+}
+#meteor{
+    display:none;
+    width: 6%
+}
+#nodejs{
+    display:none;
+    width: 5%
+}
+#mongodb{
+    display: none;
+    width: 15%
+}
+.img{
+    position:absolute;
+    top: 550px;
+    background-color: rgba(169,169,169,0.6);
+    width: 100vw;
+    height: 100vw;
 }

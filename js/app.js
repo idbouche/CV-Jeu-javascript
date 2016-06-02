@@ -1,3 +1,20 @@
+/*
+requestAnimationFrame
+​
+http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+refactored by Yannick Albert (https://gist.github.com/yckart/5486197)
+​
+MIT license
+*/
+(function(c){var b="equestAnimationFrame",f="r"+b,a="ancelAnimationFrame",e="c"+a,d=0,h=["moz","ms","o","webkit"],g;while(!c[f]&&(g=h.pop())){c[f]=c[g+"R"+b];c[e]=c[g+"C"+a]||c[g+"CancelR"+b]}if(!c[f]){c[f]=function(l){var k=new Date().getTime(),i=16-(k-d),j=i>0?i:0;d=k+j;return setTimeout(function(){l(d)},j)};c[e]=clearTimeout}}(this));
+/*
+End: requestAnimationFrame
+*/
+
+/* Variables globales *********************************************************/
+
 var cv      = null;
 var score   = 0;
 var live   = 4;
@@ -7,6 +24,7 @@ var players  = null;
 var enimes   = null;
 var platform= null;
 var bonuss   = null;
+var pouse = false;
 
 var textscore= null;
 var textConpetence= 'CSS';
@@ -18,7 +36,8 @@ var bgsp    = 0;
 var xpl     = 0;
 var keys    = [];
 var blockx  = 0;
-
+/* Fin Variables globales ******************************************************/
+/* Les objets ******************************************************/
 var player ={
     posx    :10,
     posy    :308,
@@ -90,7 +109,6 @@ var tabblock = [];
 var tabbonus = [];
 var tabtext  = [];
 
-//ctreat(tabEnmis,createEnmi)
 var ctreat = function(T,O){
     var posx= 350;
     var posy=0;
@@ -104,6 +122,9 @@ var ctreat = function(T,O){
 ctreat(tabEnmis,createEnmi)
 ctreat(tabbonus,createBonus)
 ctreat(tabblock,createBlock)
+
+/* Fin Les objets ******************************************************/
+/* Les functions affichage  *****************************************************/
 function setup() {
 
     cv        = document.getElementById("cv");
@@ -114,9 +135,9 @@ function setup() {
     bonuss    = cv.getContext('2d');
     textscore = cv.getContext('2d');
 
-    cv.width  = 1800;
+    cv.width  = innerWidth;
     cv.height = 400;
-
+    /* Draw player ******************************************************/
     var pl = new Image();
     pl.src = "img/sprit.png";
     players = cv.getContext('2d');
@@ -136,25 +157,27 @@ function setup() {
                      );
     players.closePath();
     players.fill();
-
+    /* Fine Draw player ******************************************************/
+    /* Draw text ******************************************************/
     textscore.fillStyle = "#ffffff";
     textscore.font=" bold 30px Monospace";
     textscore.fillText("      " +score,10,50);
 
     textscore.fillStyle = "#ffffff";
     textscore.font=" bold 30px Monospace";
-    textscore.fillText("Lives : " +live,200,50);
+    textscore.fillText("Vies : " +live,200,50);
 
     textscore.fillStyle = "#ffffff";
     textscore.font=" bold 30px Monospace";
-    textscore.fillText("Resultats : " +textResultats,window.innerWidth-450,50);
+    textscore.fillText("Résultats : " +textResultats,window.innerWidth-450,50);
+    /* Fine Draw text ******************************************************/
 
 
 }
-
+/* Le moteur de jeu  ******************************************************/
 var timeS
 function loup(timestamp){
-
+     pouse= true;
      var diff= 0;
     if (timeS){
         diff = -timeS + timestamp;
@@ -167,17 +190,6 @@ function loup(timestamp){
         timeS = 0;
         setup();
 
-        if (player.posx >= 1000){
-            bgsp = 0.8;
-            if(keys[37]){
-                blockx -=2;
-                player.sy = player.height * 9;
-            }
-            if(keys[39]) {
-                blockx +=2;
-                player.sy = player.height *11;
-            }
-        }else{
             if(keys[37]){
                 player.posx += -5 ;
                 // vx -= friction;
@@ -189,13 +201,12 @@ function loup(timestamp){
                 player.posx += 5;
                 //vx += friction;
                 player.sy = player.height *11;
-                document.getElementById("start").style.display = 'none';
 
             }
-        }
 
-        if (player.posx >=cv.width - player.width){
-            player.posx = cv.width - player.width;
+
+        if (player.posx >=innerWidth - player.width){
+            player.posx = innerWidth - player.width;
         }
         if (player.posx < 0){
             player.posx = 0;
@@ -217,6 +228,8 @@ function loup(timestamp){
                 player.jump = true;
                 player.vy -= (player.speed * 2);
             }
+            document.getElementById("game").style.display = 'block';
+            document.getElementById("accueil").style.display = 'none';
         }
 
         for (var j=0; j<3; j++){
@@ -236,8 +249,11 @@ function loup(timestamp){
 
     }
 
-    requestAnimationFrame(loup);
+     requestAnimationFrame(loup);
+
 }
+/* Fin Le moteur de jeu  ******************************************************/
+/* Création objet bonus  ******************************************************/
 var cBonus = function(B,color,H1,H2,text ){
     B.color = color;
     bonuss.fillStyle = "rgba(0,0,0,0)";
@@ -273,40 +289,50 @@ var cBonus = function(B,color,H1,H2,text ){
                 bar('myBar');
                 tabtext=[];
                 textConpetence = "HTML";
+                document.getElementById("css").style.display = 'inline-block';
                 break;
             case "HTML":
                 bar('myBar2');
                 tabtext=[];
                 textConpetence ="NODEJS";
+                document.getElementById("html").style.display = 'inline-block';
                 break;
             case "NODEJS":
                 bar('myBar3');
                 tabtext=[];
                 textConpetence ="JAVASCRIPT";
+                document.getElementById("nodejs").style.display = 'inline-block';
                 break;
             case "JAVASCRIPT":
                 bar('myBar4');
                 tabtext=[];
                 textConpetence ="ANGOLAREJS";
+                document.getElementById("javascript").style.display = 'inline-block';
                 break;
             case "ANGOLAREJS":
                 bar('myBar5');
                 tabtext=[];
                 textConpetence ="BOOSTRAPPJQUERY";
+                document.getElementById("angular").style.display = 'inline-block';
                 break;
             case "BOOSTRAPPJQUERY":
                 bar('myBar6');
                 tabtext=[];
                 textConpetence ="PHPDJANGOPYTHON";
+                document.getElementById("bootstrap").style.display = 'inline-block';
+                document.getElementById("jquery").style.display = 'inline-block';
                 break;
             case "PHPDJANGOPYTHON":
                 bar('myBar7');
                 tabtext=[];
                 textConpetence ="MONGODBEXPRESSJS";
-
+                document.getElementById("php").style.display = 'inline-block';
+                document.getElementById("django").style.display = 'inline-block';
                 break;
             case "MONGODBEXPRESSJS":
                 bar('myBar8');
+                document.getElementById("mongodb").style.display = 'inline-block';
+                document.getElementById("express").style.display = 'inline-block';
                 game();
                 break;
         }
@@ -314,11 +340,13 @@ var cBonus = function(B,color,H1,H2,text ){
     }
 
  }
+/* Fin Création objet bonus  ************************************************/
 var bar = function(mybar){
     var Hvalue = 100 -  (tabtext.length*100/textConpetence.length);
     window.document.getElementById(mybar).style.height = Hvalue + "%";
 
 }
+/* Création objet enmis  ******************************************************/
 var cEnmis = function(E,H1,H2){
     var el;
     var e = new Image();
@@ -356,7 +384,8 @@ var cEnmis = function(E,H1,H2){
     E.posx += E.vx;
     E.posy += E.vy;
 }
-
+/* Fin Création objet enmis  ************************************************/
+/* Création objet block  ******************************************************/
 var cBlock = function( BL,x, y,color,text){
     BL.posx = x;
     BL.posy = y;
@@ -399,8 +428,8 @@ var cBlock = function( BL,x, y,color,text){
         player.posy  = BL.posy - player.height;
     }
 }
-
-
+/* Fin Création objet bonus  *************************************************/
+/* Gestion de collision  ******************************************************/
 var rangeIntersect = function(min0, max0, min1, max1) {
     return Math.max(min0, max0) >= Math.min(min1, max1) &&
         Math.min(min0, max0) <= Math.max(min1, max1);
@@ -414,12 +443,12 @@ var colision = function(r0, r1, b) {
     return rangeIntersect(r0.posx, r0.posx + r0.width, r1.posx, r1.posx + r1.width) &&
         rangeIntersect(r0.posy, r0.posy + r0.height, r1.posy, r1.posy + r1.height);
 }
-
+/* Fin gestion collision  ******************************************************/
 
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min +1)) + min;
 }
-
+/* Gestion de touche de clavier  ************************************************/
 document.body.addEventListener("keydown", function(event) {
     keys[event.keyCode] = true;
 });
@@ -429,22 +458,20 @@ document.body.addEventListener("keyup", function(event) {
     player.sy = player.height * 11;
     player.sx = 0;
 });
-
+/* Fin Gestion de touche de clavier  *******************************************/
 
 window.addEventListener("load",function(){
     loup();
 });
+/* Gestion le DOM  ************************************************/
  var show = function(){
      document.getElementById("gameover").style.display = 'block';
-     document.getElementById("game").style.display = 'none';
-     document.getElementById("show").style.display = 'none';
+     document.getElementById("game").style.display = 'none'; document.getElementById("accueil").style.display = 'none';
  }
  var game = function(){
-     document.getElementById("gameover").style.display = 'none';
-     document.getElementById("game").style.display = 'block';
-     document.getElementById("show").style.display = 'block';
+     window.location.reload(false);
  }
-
+ /* Fin Gestion le DOM  ************************************************/
 
 
 
