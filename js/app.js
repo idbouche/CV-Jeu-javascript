@@ -37,6 +37,7 @@ var xpl     = 0;
 var keys    = [];
 var blockx  = 0;
 /* Fin Variables globales ******************************************************/
+
 /* Les objets ******************************************************/
 var player ={
     posx    :10,
@@ -124,7 +125,8 @@ ctreat(tabbonus,createBonus)
 ctreat(tabblock,createBlock)
 
 /* Fin Les objets ******************************************************/
-/* Les functions affichage  *****************************************************/
+
+/* Les functions affichage  ****************************************************/
 function setup() {
 
     cv        = document.getElementById("cv");
@@ -137,6 +139,7 @@ function setup() {
 
     cv.width  = 2000;
     cv.height = 400;
+
     /* Draw player ******************************************************/
     var pl = new Image();
     pl.src = "img/sprit.png";
@@ -158,6 +161,7 @@ function setup() {
     players.closePath();
     players.fill();
     /* Fine Draw player ******************************************************/
+
     /* Draw text ******************************************************/
     textscore.fillStyle = "#ffffff";
     textscore.font=" bold 30px Monospace";
@@ -174,6 +178,7 @@ function setup() {
 
 
 }
+
 /* Le moteur de jeu  ******************************************************/
 var timeS
 function loup(timestamp){
@@ -253,22 +258,28 @@ function loup(timestamp){
 
 }
 /* Fin Le moteur de jeu  ******************************************************/
+
 /* Création objet bonus  ******************************************************/
 var cBonus = function(B,color,H1,H2,text ){
+
     B.color = color;
     bonuss.fillStyle = "rgba(0,0,0,0)";
     bonuss.fillRect(B.posx,B.posy,B.width,B.height);
 
     context.font="bold 30pt Monospace";
+
     B.text = text;
     context.fillStyle = B.color;
     context.fillText(B.text,B.posx,B.posy+25,B.width);
+
     if(B.posx >= cv.width || B.posx <= 0){
         B.vx *= -1;
     }
+
     if(B.posy+B.height >= H1 || B.posy <= H2){
         B.vy *= -1;
     }
+
     B.posx += B.vx;
     B.posy += B.vy;
 
@@ -285,36 +296,42 @@ var cBonus = function(B,color,H1,H2,text ){
         textResultats = tabtext.join("");
 
         switch(textResultats) {
+
             case "CSS":
                 bar('myBar');
                 tabtext=[];
                 textConpetence = "HTML";
                 document.getElementById("css").style.display = 'inline-block';
                 break;
+
             case "HTML":
                 bar('myBar2');
                 tabtext=[];
                 textConpetence ="NODEJS";
                 document.getElementById("html").style.display = 'inline-block';
                 break;
+
             case "NODEJS":
                 bar('myBar3');
                 tabtext=[];
                 textConpetence ="JAVASCRIPT";
                 document.getElementById("nodejs").style.display = 'inline-block';
                 break;
+
             case "JAVASCRIPT":
                 bar('myBar4');
                 tabtext=[];
                 textConpetence ="ANGOLAREJS";
                 document.getElementById("javascript").style.display = 'inline-block';
                 break;
+
             case "ANGOLAREJS":
                 bar('myBar5');
                 tabtext=[];
                 textConpetence ="BOOSTRAPPJQUERY";
                 document.getElementById("angular").style.display = 'inline-block';
                 break;
+
             case "BOOSTRAPPJQUERY":
                 bar('myBar6');
                 tabtext=[];
@@ -322,6 +339,7 @@ var cBonus = function(B,color,H1,H2,text ){
                 document.getElementById("bootstrap").style.display = 'inline-block';
                 document.getElementById("jquery").style.display = 'inline-block';
                 break;
+
             case "PHPDJANGOPYTHON":
                 bar('myBar7');
                 tabtext=[];
@@ -329,6 +347,7 @@ var cBonus = function(B,color,H1,H2,text ){
                 document.getElementById("php").style.display = 'inline-block';
                 document.getElementById("django").style.display = 'inline-block';
                 break;
+
             case "MONGODBEXPRESSJS":
                 bar('myBar8');
                 document.getElementById("mongodb").style.display = 'inline-block';
@@ -340,12 +359,14 @@ var cBonus = function(B,color,H1,H2,text ){
     }
 
  }
+
 /* Fin Création objet bonus  ************************************************/
 var bar = function(mybar){
     var Hvalue = 100 -  (tabtext.length*100/textConpetence.length);
     window.document.getElementById(mybar).style.height = Hvalue + "%";
 
 }
+
 /* Création objet enmis  ******************************************************/
 var cEnmis = function(E,H1,H2){
     var el;
@@ -385,6 +406,7 @@ var cEnmis = function(E,H1,H2){
     E.posy += E.vy;
 }
 /* Fin Création objet enmis  ************************************************/
+
 /* Création objet block  ******************************************************/
 var cBlock = function( BL,x, y,color,text){
     BL.posx = x;
@@ -429,6 +451,7 @@ var cBlock = function( BL,x, y,color,text){
     }
 }
 /* Fin Création objet bonus  *************************************************/
+
 /* Gestion de collision  ******************************************************/
 var rangeIntersect = function(min0, max0, min1, max1) {
     return Math.max(min0, max0) >= Math.min(min1, max1) &&
@@ -463,6 +486,7 @@ document.body.addEventListener("keyup", function(event) {
 window.addEventListener("load",function(){
     loup();
 });
+
 /* Gestion le DOM  ************************************************/
  var show = function(){
      document.getElementById("gameover").style.display = 'block';
