@@ -135,7 +135,7 @@ function setup() {
     bonuss    = cv.getContext('2d');
     textscore = cv.getContext('2d');
 
-    cv.width  = innerWidth;
+    cv.width  = 2000;
     cv.height = 400;
     /* Draw player ******************************************************/
     var pl = new Image();

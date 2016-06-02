@@ -286,6 +286,14 @@ i {
     display:none;
     width: 15%
 }
+#django{
+    display:none;
+    width: 5%
+}
+#php{
+    display:none;
+    width: 15%
+}
 #jquery{
     display:none;
     width: 15%
